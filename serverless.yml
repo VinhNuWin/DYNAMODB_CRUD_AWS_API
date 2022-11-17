@@ -6,10 +6,10 @@ provider:
   stage: dev
   region: us-west-2
   environment:
-    DYNAMODB_TABLE_NAME: ${self:custom.brawlerTableName}
+    DYNAMODB_TABLE_NAME: ${self:custom.brawlstats-api}
 
 custom:
-  brawlerTableName: posts-table-${self:provider.stage}
+  brawlstats-api: posts-table-${self:provider.stage}
 
 plugins:
   - serverless-iam-roles-per-function
@@ -28,7 +28,7 @@ functions:
       - Effect: "Allow"
         Action:
           - "dynamodb:GetItem"
-        Resource: !GetAtt BrawlerTable.Arn
+        Resource: !GetAtt brawlstats-api.Arn
   createPost:
     handler: api.createPost
     name: create-post
@@ -42,7 +42,7 @@ functions:
       - Effect: "Allow"
         Action:
           - "dynamodb:PutItem"
-        Resource: !GetAtt BrawlerTable.Arn
+        Resource: !GetAtt brawlstats-api.Arn
   updatePost:
     handler: api.updatePost
     name: update-post
@@ -56,7 +56,7 @@ functions:
       - Effect: "Allow"
         Action:
           - "dynamodb:UpdateItem"
-        Resource: !GetAtt BrawlerTable.Arn
+        Resource: !GetAtt brawlstats-api.Arn
   deletePost:
     handler: api.deletePost
     name: delete-post
@@ -70,7 +70,7 @@ functions:
       - Effect: "Allow"
         Action:
           - "dynamodb:DeleteItem"
-        Resource: !GetAtt BrawlerTable.Arn
+        Resource: !GetAtt brawlstats-api.Arn
   getAllPosts:
     handler: api.getAllPosts
     name: get-all-posts
@@ -84,14 +84,14 @@ functions:
       - Effect: "Allow"
         Action:
           - "dynamodb:Scan"
-        Resource: !GetAtt BrawlerTable.Arn
+        Resource: !GetAtt brawlstats-api.Arn
 
 resources:
   Resources:
-    PostsTable:
+    brawlstats-api:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.brawlerTableName}
+        TableName: ${self:custom.brawlstats-api}
         AttributeDefinitions:
           - AttributeName: postId
             AttributeType: S
